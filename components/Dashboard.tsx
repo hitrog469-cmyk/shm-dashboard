@@ -20,12 +20,22 @@ export interface ChannelStat {
   max: number;
   z: number;
   status: SensorStatus;
+  /** Alarm hold-down: timestamp until which a warn/alert state is latched. */
+  holdUntil: number;
 }
 
 /** 60 s rolling window at 2 Hz, plus the incoming point. */
 const MAX_POINTS = 121;
 const Z_WINDOW = 50;
 const MAX_EVENTS = 50;
+/**
+ * Minimum time a warn/alert state stays raised. A z-score spike clears
+ * within a sample or two once the outlier inflates the window's std, so
+ * without a hold the operator (or demo visitor) would barely see it.
+ */
+const ALARM_HOLD_MS = 4500;
+
+const SEVERITY: Record<SensorStatus, number> = { ok: 0, warn: 1, alert: 2 };
 
 interface Engine {
   feed: SensorFeed;
@@ -51,9 +61,18 @@ function pushEvent(
 }
 
 function handleSample(engine: Engine, ch: SensorChannel, sample: SensorSample) {
-  const { z, status } = engine.detectors.get(ch.id)!.push(sample.value);
+  const { z, status: rawStatus } = engine.detectors.get(ch.id)!.push(sample.value);
   const stat = engine.stats.get(ch.id)!;
   const prevStatus = stat.status;
+
+  // Latch warn/alert for ALARM_HOLD_MS: escalations apply immediately,
+  // de-escalations wait for the hold to expire.
+  let status = rawStatus;
+  if (SEVERITY[rawStatus] >= SEVERITY[prevStatus]) {
+    if (SEVERITY[rawStatus] > 0) stat.holdUntil = sample.t + ALARM_HOLD_MS;
+  } else if (sample.t < stat.holdUntil) {
+    status = prevStatus;
+  }
 
   stat.latest = sample.value;
   stat.min = Math.min(stat.min, sample.value);
@@ -104,6 +123,7 @@ export default function Dashboard() {
         max: -Infinity,
         z: 0,
         status: "ok",
+        holdUntil: 0,
       });
     }
     engineRef.current = engine;
