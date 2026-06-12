@@ -11,7 +11,7 @@ const jetbrains = JetBrains_Mono({
 export const metadata: Metadata = {
   title: "SHM Dashboard · Bridge Girder Monitor",
   description:
-    "Structural Health Monitoring dashboard with live sensor streams, rolling z-score anomaly detection, and a real-time bridge girder view. Built by Rohit Acharya.",
+    "Structural Health Monitoring dashboard prototype with simulated live sensor streams, rolling z-score anomaly detection, and a real-time bridge girder view. Built by Rohit Acharya.",
 };
 
 export default function RootLayout({
