@@ -5,7 +5,7 @@ sensor data for a simply supported bridge girder. Six channels (2
 accelerometers, 2 strain gauges, 1 displacement transducer, 1 temperature
 sensor) stream at 2 Hz with rolling z-score anomaly detection per channel.
 
-Built by [Rohit Acharya](https://rohitacharya.dev) — a step toward a personal
+Built by [Rohit Acharya](https://rohit-website-sigma.vercel.app/) — a step toward a personal
 mission: Nepal's ~3,000 bridges operate with essentially no structural health
 monitoring.
 

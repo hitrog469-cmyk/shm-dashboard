@@ -25,12 +25,12 @@ export default function Home() {
         <footer className="mt-6 border-t border-edge pt-4 text-center font-mono text-xs text-gray-600">
           Built by{" "}
           <a
-            href="https://rohitacharya.dev"
+            href="https://rohit-website-sigma.vercel.app/"
             target="_blank"
             rel="noopener noreferrer"
             className="text-accent transition-colors hover:text-amber-400"
           >
-            Rohit Acharya · rohitacharya.dev
+            Rohit Acharya · rohit-website-sigma.vercel.app
           </a>
         </footer>
       </div>
